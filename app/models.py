@@ -7,6 +7,7 @@ class Book(db.Model):
     title = db.Column(db.String(64), unique=True)
     author = db.Column(db.String(120), unique=False)
     description = db.Column(db.String(2000), default="")
+    slug = db.Column(db.String(256), unique=False)
 
     def __init__(self, title, author, description):
         self.title = title
@@ -30,7 +31,7 @@ class Book(db.Model):
 # --------------------------------------------------------------------------------------------------
 class BookSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'title', 'author', 'description',)
+        fields = ('id', 'title', 'author', 'description', 'slug',)
 
 
 book_schema = BookSchema()

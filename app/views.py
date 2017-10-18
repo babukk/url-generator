@@ -46,11 +46,27 @@ def slug_book(id):
     query = db.session.query(Book)
     book = query.filter_by(id=id).first()
 
-    slug = slugify(str(id) + "_" + book['title'])
+    if book.slug:
+        slug = book.slug
+    else:
+        slug = slugify(str(id) + "_" + book['title'])
+        book.slug = slug
+        db.session.commit()
 
-    print slug
+    return Response(
+        status=201,
+        mimetype="application/json",
+        response=json.dumps({'slug': slug,}) + "\n"
+    )
+
+# --------------------------------------------------------------------------------------------------
+@app.route('/books/api/v1.0/get_book/<slug>', methods=['GET'])
+def get_book(slug):
+    query = db.session.query(Book)
+    book = query.filter_by(slug=slug).first()
+
     return Response(
         status=200,
         mimetype="application/json",
-        response=json.dumps({'slug': slug,}) + "\n"
+        response=json.dumps({'book': book.serialize(),}) + "\n"
     )
